@@ -23,19 +23,19 @@ func (t *terminalHandler) run(cmd *libcmd.Cmd) error {
 		volumes[i] = uint32(volume)
 	}
 
-	watter := uint32(*w)
-	group := gallons.CreateBottleGroup(watter, volumes...)
+	water := uint32(*w)
+	group := gallons.CreateBottleGroup(water, volumes...)
 
-	restWatter, bottlesUsed, err := group.UseBottles()
+	restWater, bottlesUsed, err := group.UseBottles()
 	if err != nil {
 		log.WithError(err).Error("Error on Use Bottles")
 		return err
 	}
 
 	log.With(log.F{
-		"Total of Watter(ML)": watter,
-		"Rest of Watter(ML)":  restWatter,
-		"Bottles(ML)":         bottlesUsed,
-	}).Info("The bottles to be used to fill the watter are")
+		"Total of Water(ML)": water,
+		"Rest of Water(ML)":  restWater,
+		"Bottles(ML)":        bottlesUsed,
+	}).Info("The bottles to be used to fill the water are")
 	return nil
 }

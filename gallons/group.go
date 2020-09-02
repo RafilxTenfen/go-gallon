@@ -5,32 +5,32 @@ import (
 	"math"
 )
 
-// Group struct that stores bottles and the watter
+// Group struct that stores bottles and the water
 type Group struct {
-	Watter  uint32
+	Water   uint32
 	Bottles []Bottle
 }
 
 // NewGroup return a new Group struct
-func NewGroup(bootles []Bottle, watter uint32) Group {
+func NewGroup(bootles []Bottle, water uint32) Group {
 	return Group{
-		Watter:  watter,
+		Water:   water,
 		Bottles: bootles,
 	}
 }
 
 // CreateBottleGroup based on parameters
-func CreateBottleGroup(watterVolume uint32, volumes ...uint32) Group {
+func CreateBottleGroup(waterVolume uint32, volumes ...uint32) Group {
 	bottles := make([]Bottle, len(volumes))
 
 	for i, v := range volumes {
 		bottles[i] = NewBottle(v)
 	}
 
-	return NewGroup(bottles, watterVolume)
+	return NewGroup(bottles, waterVolume)
 }
 
-// UseBottles use all the available bottles using combination to search for the one with least rest of watter
+// UseBottles use all the available bottles using combination to search for the one with least rest of water
 func (g Group) UseBottles() (int, []Bottle, error) {
 	mapBottles := make(map[int][]Bottle)
 
@@ -40,19 +40,19 @@ func (g Group) UseBottles() (int, []Bottle, error) {
 
 	g.addBottle(mapBottles, []Bottle{}, bottles, len(g.Bottles))
 
-	watterRest := math.MaxInt64
+	waterRest := math.MaxInt64
 	for rest := range mapBottles {
-		if rest >= 0 && rest < watterRest {
-			watterRest = rest
+		if rest >= 0 && rest < waterRest {
+			waterRest = rest
 		}
 	}
 
-	bottles, ok := mapBottles[watterRest]
+	bottles, ok := mapBottles[waterRest]
 	if !ok {
 		return 0, []Bottle{}, fmt.Errorf("Error on get the bottles")
 	}
 
-	return watterRest, bottles, nil
+	return waterRest, bottles, nil
 }
 
 func (g Group) addBottle(mapBottles map[int][]Bottle, newCombo []Bottle, unusedBottles []Bottle, length int) {
@@ -68,7 +68,7 @@ func (g Group) addBottle(mapBottles map[int][]Bottle, newCombo []Bottle, unusedB
 		newCombo := append(newCombo, bottle)
 		volume := volume(newCombo)
 
-		rest := volume - int(g.Watter)
+		rest := volume - int(g.Water)
 		_, ok := mapBottles[rest]
 		if !ok {
 			mapBottles[rest] = newCombo

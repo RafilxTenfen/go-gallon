@@ -25,8 +25,8 @@ func Main(args []string) int {
 	defer log.TearDown()
 	log.SetStdoutLevel(log.LevelDebug)
 
-	app.Command("run", "Run the gallon binary searching for the best approach leaving the least possible of watter", func(cmd *libcmd.Cmd) {
-		cmd.Uint("water", 'w', 3000, "Watter value in millilitre(ML)")
+	app.Command("run", "Run the gallon binary searching for the best approach leaving the least possible of water", func(cmd *libcmd.Cmd) {
+		cmd.Uint("water", 'w', 3000, "Water value in millilitre(ML)")
 		cmd.String("gallon", 'g', "1500,2000,3000", "Gallons volume comma separated in millilitre(ML)")
 		cmd.Run(h.run)
 	})

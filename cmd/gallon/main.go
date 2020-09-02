@@ -1,11 +1,14 @@
 package main
 
 import (
-	"fmt"
+	"os"
+	"runtime"
+
+	"github.com/RafilxTenfen/go-gallon/cli/gallon"
 )
 
 func main() {
-	bottleGroup := gallons.CreateBottleGroup(2)
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	fmt.Printf("bottle %+v", bottleGroup)
+	os.Exit(gallon.Main(os.Args[1:]))
 }

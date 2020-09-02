@@ -1,4 +1,6 @@
+GO=go
 GOBUILD=$(GO) build
+BUILDENV=GOTRACEBACK=none CGO_ENABLED=0
 GOENV=$(GO) env
 FLAGS=-trimpath
 LDFLAGS=-ldflags "-w -s"
@@ -16,12 +18,18 @@ PLATFORMS=linux-amd64 darwin-amd64 linux-arm7
 PLATFORM_TARGETS=$(foreach p,$(PLATFORMS),$(addprefix build/$(p)/,$(TARGETS)))
 DIST_TARGETS=$(addsuffix .tar.gz,$(addprefix dist/,$(PLATFORMS)))
 
-
 all: build
 
 dist: $(DIST_TARGETS)
 
 build: $(TARGETS)
+
+check: .build-cache/testpkgs.list
+	cat $< | xargs go test
+
+.build-cache/testpkgs.list: $(SOURCES)
+	mkdir -p .build-cache
+	go list ./... > $@
 
 # general build rule
 define BUILD_RULE
@@ -31,13 +39,13 @@ $(TARGET): build/$$(OS)-$$(ARCH)/$(TARGET)
 	cp $$< $$@
 
 build/linux-amd64/$(TARGET): $$($(TARGET)_SOURCES) $$(SOURCES)
-	env GOARCH=amd64 GOOS=linux $$(GOBUILD) $$(FLAGS) $$(LDFLAGS) -o $$@ ./cmd/$(TARGET)
+	env $(BUILDENV) GOARCH=amd64 GOOS=linux $$(GOBUILD) $$(FLAGS) $$(LDFLAGS) -o $$@ ./cmd/$(TARGET)
 
 build/darwin-amd64/$(TARGET): $$($(TARGET)_SOURCES) $$(SOURCES)
-	env GOARCH=amd64 GOOS=darwin $$(GOBUILD) $$(FLAGS) $$(LDFLAGS) -o $$@ ./cmd/$(TARGET)
+	env $(BUILDENV) GOARCH=amd64 GOOS=darwin $$(GOBUILD) $$(FLAGS) $$(LDFLAGS) -o $$@ ./cmd/$(TARGET)
 
 build/linux-arm7/$(TARGET): $$($(TARGET)_SOURCES) $$(SOURCES)
-	env GOARM=7 GOARCH=arm GOOS=linux $$(GOBUILD) $$(FLAGS) $$(LDFLAGS) -o $$@ ./cmd/$(TARGET)
+	env $(BUILDENV) GOARM=7 GOARCH=arm GOOS=linux $$(GOBUILD) $$(FLAGS) $$(LDFLAGS) -o $$@ ./cmd/$(TARGET)
 
 endef
 
@@ -55,9 +63,9 @@ rules.mk: Makefile
 	$(foreach PLATFORM,$(PLATFORMS),$(file >> $@,$(DIST_RULE)))
 
 include rules.mk
-
+   
 clean:
 	rm -rf $(TARGETS) $(PLATFORM_TARGETS)
 	rm -rf dist build
 
-.PHONY: all dist build clean⏎  
+.PHONY: all dist build clean

@@ -1,6 +1,10 @@
-/loginsrv
+/gallon
 dist/*
 log/*
 tmp/*
 *.log
+.build-cache
+build/*
+./log/*
 
+rules.mk
